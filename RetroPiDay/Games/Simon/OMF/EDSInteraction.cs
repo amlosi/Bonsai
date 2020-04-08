@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RetroPiDay.Games.Simon.OMF
 {
@@ -88,6 +89,31 @@ namespace RetroPiDay.Games.Simon.OMF
             {
                 Console.WriteLine(e);
                 return false;
+            }
+        }
+
+        public async Task<string> GetHighScores()
+        {
+            var url = _streamUrl + "TopTen";
+
+            try
+            {
+                var response = await _client.GetAsync(url);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                else
+                {
+                    string highScoresString = await response.Content.ReadAsStringAsync();
+
+                    return highScoresString;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 
 namespace RetroPiDay.Games.Simon
@@ -7,7 +8,7 @@ namespace RetroPiDay.Games.Simon
     public class Simon : IGame
     {
         private Credits exitCredits = new Credits();
-        private Score score = new Score();
+        private Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
 
         public Simon()
         {
