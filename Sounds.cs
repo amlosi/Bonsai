@@ -21,7 +21,6 @@ namespace Simon
             _colorSounds.Add(ConsoleColor.Red, (int)(baseFreq * .75));
             _colorSounds.Add(ConsoleColor.Blue, (int)(baseFreq * .50));
             _colorSounds.Add(ConsoleColor.Yellow, (int)(baseFreq * .25));
-
         }
 
         public static void PlaySoundForColorKey(char color)
