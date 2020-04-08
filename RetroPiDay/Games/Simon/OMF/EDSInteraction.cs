@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using static RetroPiDay.Games.Simon.OMF.Models;
 
 namespace RetroPiDay.Games.Simon.OMF
