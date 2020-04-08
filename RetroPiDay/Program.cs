@@ -35,12 +35,10 @@ namespace RetroPiDay
             }
         }
 
-        private static void MainMenuDisplayOptions()
-        {
-            Console.Clear();
-            Console.WriteLine("Main Menu:");
-            Console.WriteLine("  'n': New Game");
-            Console.WriteLine("  'x': Exit");
+                Console.Clear();
+                Console.WriteLine("Starting a new game, press Ctrl+c to quit.");
+                Thread.Sleep(5000);
+            }
         }
     }
 }
