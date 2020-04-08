@@ -129,6 +129,48 @@ namespace RetroPiDay.Games.Simon.OMF
 
         }
 
+        public int UserHighScore(string user)
+        {
+            HttpResponseMessage returnCode = default;
+            string _url = _streamUrl + user + "/data?startIndex=0&count=1000";
+            int max = 0;
+
+            List<UserScore> userScores = new List<UserScore>();
+            try
+            {
+                returnCode = _client.GetAsync(_url).Result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            if (returnCode.StatusCode == HttpStatusCode.NotFound)
+            {
+                return 0;
+            }
+
+            userScores = JsonSerializer.Deserialize<List<UserScore>>(returnCode.Content.ReadAsStringAsync().Result);
+
+            return FindUserMaxScore(userScores);
+
+        }
+
+        private int FindUserMaxScore(List<UserScore> userScores)
+        {
+            int max = 0;
+
+            foreach(var s in userScores)
+            {
+                if(s.Score > max)
+                {
+                    max = s.Score;
+                }
+            }
+
+            return max;
+        }
+
         private bool CheckIfStreamExists(string streamName)
         {
             HttpResponseMessage returnCode = default;
