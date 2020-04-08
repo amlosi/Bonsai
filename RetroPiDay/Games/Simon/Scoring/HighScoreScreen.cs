@@ -9,6 +9,9 @@ namespace RetroPiDay.Games.Simon.Scoring
     {
         public void ShowHighScores()
         {
+            var eds = new EDSInteraction("asdf");
+            var highScoresString = eds.GetHighScores().Result;
+
             Models.TopTenStream topten = new Models.TopTenStream();
             topten.HighScorers = new List<Models.HighScores>();
             topten.HighScorers.Add(new Models.HighScores() { ScoreKey = 1, Score = 999, Username = "alevi@osisoft.com" });
@@ -21,8 +24,6 @@ namespace RetroPiDay.Games.Simon.Scoring
                 Console.WriteLine($"{scorer.ScoreKey}  {scorer.Score}  {scorer.Username}");
             }
 
-            var eds = new EDSInteraction("asdf");
-            var highScoresString = eds.GetHighScores().Result;
         }
     }
 }

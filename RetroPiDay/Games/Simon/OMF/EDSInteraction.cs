@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace RetroPiDay.Games.Simon.OMF
 {
@@ -92,7 +93,7 @@ namespace RetroPiDay.Games.Simon.OMF
             }
         }
 
-        public async Task<string> GetHighScores()
+        public async Task<Models.TopTenStream> GetHighScores()
         {
             var url = _streamUrl + "TopTen";
 
@@ -107,7 +108,9 @@ namespace RetroPiDay.Games.Simon.OMF
                 {
                     string highScoresString = await response.Content.ReadAsStringAsync();
 
-                    return highScoresString;
+                    Models.TopTenStream highScores = JsonSerializer.Deserialize<Models.TopTenStream>(highScoresString);
+
+                    return highScores;
                 }
             }
             catch (Exception e)
