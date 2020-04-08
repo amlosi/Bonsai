@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace RetroPiDay
+namespace RetroPiDay.Games.Simon
 {
     public class SimonSequence
     {
