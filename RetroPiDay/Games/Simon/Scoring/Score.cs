@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RetroPiDay.Games.Simon.OMF;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -20,33 +21,14 @@ namespace RetroPiDay.Games.Simon
 
         public Score(string _playerName)
         {
-            ReadHighScore();
             Player = _playerName;
         }
 
         public void RecordHighScore()
-        {            
-            using(var f = File.CreateText(_filePath))
-            {
-                f.Write(HighScore);
-            }
-        }
-
-        public void ReadHighScore()
         {
-            if(File.Exists(_filePath))
-            {
-                using (var f = new StreamReader(_filePath))
-                {
-                    int.TryParse(f.ReadToEnd(), out int score);
-                    HighScore = score;
-                }
-            }
-            else
-            {
-                HighScore = 0;
-            }
-            
+            var eds = new EDSInteraction(Player);
+            eds.UpdateUserScores(Player, CurrentScore);
+            eds.PutHighScore(this).Wait();
         }
 
         public void DisplayScore()

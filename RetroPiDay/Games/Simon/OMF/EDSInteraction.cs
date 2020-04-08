@@ -68,6 +68,11 @@ namespace RetroPiDay.Games.Simon.OMF
 
         private bool SetupTypes(string type, string json)
         {
+            if (CheckIfTypeExists(type))
+            {
+                return true;
+            }
+
             HttpResponseMessage returnCode = default;
             var url = _typeUrl + type;
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -129,6 +134,30 @@ namespace RetroPiDay.Games.Simon.OMF
 
         }
 
+        private bool CheckIfTypeExists(string typeName)
+        {
+            HttpResponseMessage returnCode = default;
+            var url = _typeUrl + typeName;
+
+            try
+            {
+                returnCode = _client.GetAsync(url).Result;
+                if (returnCode.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+
         private bool CheckIfStreamExists(string streamName)
         {
             HttpResponseMessage returnCode = default;
@@ -177,6 +206,69 @@ namespace RetroPiDay.Games.Simon.OMF
             {
                 Console.WriteLine(e);
                 return null;
+            }
+        }
+
+        public async Task PutHighScore(Score myScore)
+        {
+            var url = _streamUrl + "TopTen";
+
+            try
+            {
+                var response = await _client.GetAsync(url);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return;
+                }
+                else
+                {
+                    string highScoresString = await response.Content.ReadAsStringAsync();
+
+                    Models.TopTenStream highScores = JsonSerializer.Deserialize<Models.TopTenStream>(highScoresString);
+
+                    int index = 11;
+                    foreach (var scorer in highScores.HighScorers)
+                    {
+                        if (scorer.Score < myScore.CurrentScore && scorer.ScoreKey < index)
+                        {
+                            index = scorer.Score;
+                        }
+                    }
+
+                    if (index < 11)
+                    {
+                        // kick out #10
+                        foreach (var scorer in highScores.HighScorers)
+                        {
+                            if (scorer.ScoreKey >= index)
+                            {
+                                scorer.ScoreKey++;
+                                break;
+                            }
+                        }
+
+                        // kick out #10
+                        foreach (var scorer in highScores.HighScorers)
+                        {
+                            if (scorer.ScoreKey == 11)
+                            {
+                                scorer.ScoreKey = index;
+                                scorer.Score = myScore.CurrentScore;
+                                scorer.Username = myScore.Player;
+                                break;
+                            }
+                        }
+                    }
+
+                    highScoresString = JsonSerializer.Serialize<Models.TopTenStream>(highScores);
+                    var content = new StringContent("{" + highScoresString + "}", Encoding.UTF8, "application/json");
+                    var returnCode = _client.PutAsync(url, content).Result;
+                    returnCode.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }
