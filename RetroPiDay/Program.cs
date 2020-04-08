@@ -1,4 +1,5 @@
 ﻿using RetroPiDay.Games.Simon;
+using RetroPiDay.Games.Simon.Scoring;
 using System;
 
 namespace RetroPiDay

@@ -42,7 +42,7 @@ namespace RetroPiDay.Games.Simon.OMF
 
         public class TopTenStream
         {
-            List<HighScores> HighScorers = new List<HighScores>();
+            public List<HighScores> HighScorers = new List<HighScores>();
         }
 
     }
