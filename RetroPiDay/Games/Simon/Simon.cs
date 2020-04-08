@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Linq;
 using System.Threading;
 
@@ -8,7 +9,7 @@ namespace RetroPiDay.Games.Simon
     public class Simon : IGame
     {
         private Credits exitCredits = new Credits();
-        private Score score = new Score("greg");
+        private Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
         private int sequenceMaxSize = 128;
         private int sequenceSpeedinMS = 350;
 

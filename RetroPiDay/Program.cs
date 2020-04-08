@@ -1,6 +1,5 @@
 ﻿using RetroPiDay.Games.Simon;
 using System;
-using System.Threading;
 
 namespace RetroPiDay
 {
