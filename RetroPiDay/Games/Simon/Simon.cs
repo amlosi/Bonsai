@@ -16,8 +16,8 @@ namespace RetroPiDay.Games.Simon
         public void Intro()
         {
             Console.Clear();
-            Console.WriteLine("This is an intro!");
-            Thread.Sleep(1000);
+            Display.Show();
+            Thread.Sleep(5000);
         }
 
         public void Outro()
