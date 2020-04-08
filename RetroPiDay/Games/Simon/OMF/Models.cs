@@ -7,11 +7,11 @@ namespace RetroPiDay.Games.Simon.OMF
     class Models
     {
 
-        public class UserScores
+        public class UserScore
         {
-            public string ScoreKey { get; set; }
+            public int ScoreKey { get; set; } = 0;
 
-            public List<int> Scores { get; set; }
+            public int Score { get; set; } = 0;
         }
 
         public class HighScores
@@ -27,22 +27,24 @@ namespace RetroPiDay.Games.Simon.OMF
         {
             public string ContainerId { get; set; }
 
-            public List<UserScores> Values { get; set; }
+            public List<UserScore> Values { get; set; }
 
-            public void Add(UserScores d)
+            public void Add(UserScore d)
             {
                 if (Values == null)
                 {
-                    Values = new List<UserScores>();
+                    Values = new List<UserScore>();
                 }
                 Values.Add(d);
             }
 
         }
 
+
+
         public class TopTenStream
         {
-            List<HighScores> HighScorers = new List<HighScores>();
+            public List<HighScores> HighScorers = new List<HighScores>();
         }
 
     }
