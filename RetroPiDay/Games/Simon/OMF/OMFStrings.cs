@@ -14,11 +14,11 @@ namespace RetroPiDay.Games.Simon.OMF
                 {
                     ""Id"": ""ScoreKey"",
                     ""Name"": ""ScoreKey"",
+                    ""IsKey"": ""true"",
                     ""SdsType"": {
                         ""Id"": ""scoreskey"",
                         ""Name"": ""ScoreKey"",
-                        ""SdsTypeCode"": 9,
-                        ""isindex"": ""true""
+                        ""SdsTypeCode"": 9
                     }
                 },
                 {
@@ -50,10 +50,11 @@ namespace RetroPiDay.Games.Simon.OMF
                 {
                     ""Id"": ""ScoreKey"",
                     ""Name"": ""ScoreKey"",
+                    ""IsKey"": ""true"",
                     ""SdsType"": {
                         ""Id"": ""scorekey"",
                         ""Name"": ""ScoreKey"",
-                        ""SdsTypeCode"": 9,
+                        ""SdsTypeCode"": 9
                     }
                 },
                 {

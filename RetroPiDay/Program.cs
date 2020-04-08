@@ -13,7 +13,7 @@ namespace RetroPiDay
             {
                 MainMenuDisplayOptions();
                 success = true;
-                var keyInfo= Console.ReadKey();
+                var keyInfo = Console.ReadKey();
 
                 char mainMenuInput = keyInfo.KeyChar;
                 switch (mainMenuInput)

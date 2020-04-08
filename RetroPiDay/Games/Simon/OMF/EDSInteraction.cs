@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
+using static RetroPiDay.Games.Simon.OMF.Models;
 
 namespace RetroPiDay.Games.Simon.OMF
 {
     class EDSInteraction
     {
         private static HttpClient _client = new HttpClient();
-        private static string _omfUrl = "http://localhost:5590/api/v1/tenants/default/namespaces/default/omf/";
         private static string _streamUrl = $"http://localhost:5590/api/v1/tenants/default/namespaces/default/streams/";
         private static string _typeUrl = $"http://localhost:5590/api/v1/tenants/default/namespaces/default/types/";
         private static string _streamDataUrl = $"http://localhost:5590/api/v1/tenants/default/namespaces/default/streams/TopTenScores/Data";
@@ -22,20 +22,36 @@ namespace RetroPiDay.Games.Simon.OMF
 
         public EDSInteraction(string streamName)
         {
+            //Setup types and HighScores
             SetupTypes(_playerScores, OMFStrings.UserTypeString);
             SetupTypes(_highScores, OMFStrings.TopTenTypeString);
-            if (!CheckIfStreamExists(_topTen))
-            {
-                SetupStream(_topTen, string.Format(OMFStrings.ContainerString, _topTen, _highScores));
-            }
-            
+            SetupStream(_topTen, string.Format(OMFStrings.ContainerString, _topTen, _highScores));
+
+            //Add user stream
+            SetupStream(streamName, string.Format(OMFStrings.ContainerString, streamName, _playerScores));
         }
 
-        private bool SetupStream(string streamName, string json)
+        public void UpdateUserScores(string user, int score)
         {
+            UserScore val = GetLastDataValue(user);
+
+            val.ScoreKey++;
+            val.Score = score;
+   
+            SendUserScore(val, user);
+
+        }
+
+        public bool SetupStream(string streamName, string json)
+        {
+            if (CheckIfStreamExists(streamName))
+            {
+                return true;
+            }
+
             HttpResponseMessage returnCode = default;
-            var url = _typeUrl + streamName;
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var url = _streamUrl + streamName;
+            var content = new StringContent("{" + json + "}", Encoding.UTF8, "application/json");
 
             try
             {
@@ -67,6 +83,50 @@ namespace RetroPiDay.Games.Simon.OMF
                 Console.WriteLine(e);
                 return false;
             }
+        }
+
+        private UserScore GetLastDataValue(string user)
+        {
+            HttpResponseMessage returnCode = default;
+            string _url = _streamUrl + user + "/data/last";
+            try
+            {
+                returnCode = _client.GetAsync(_url).Result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            if(returnCode.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new UserScore();
+            }
+
+            return JsonSerializer.Deserialize<UserScore>(returnCode.Content.ReadAsStringAsync().Result);
+        }
+
+        private bool SendUserScore(UserScore val, string stream)
+        {
+            HttpResponseMessage returnCode = default;
+            UserStream user = new UserStream();
+            user.ContainerId = stream;
+            user.Add(val);
+            var newScore = JsonSerializer.Serialize(user.Values);
+            var content = new StringContent(newScore, Encoding.UTF8, "application/json");
+            string _url = _streamUrl + stream + "/" + "data";
+            try
+            {
+                returnCode = _client.PostAsync(_url, content).Result;
+                returnCode.EnsureSuccessStatusCode();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
         }
 
         private bool CheckIfStreamExists(string streamName)
