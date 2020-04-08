@@ -39,7 +39,7 @@ namespace Simon
         {
             if (_colorSounds.TryGetValue(color, out int frequency))
             {
-                Console.Beep(frequency, 500);
+                Console.Beep(frequency, 350);
             }
         }
 
