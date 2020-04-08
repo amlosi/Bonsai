@@ -41,6 +41,15 @@ namespace Simon
             {
                 Console.Beep(frequency, 350);
             }
+            else
+            {
+                // invalid color, sound to alert the developer
+                Console.Beep(100, 1500);
+                Console.Beep(200, 1500);
+                Console.Beep(100, 1500);
+                Console.Beep(200, 1500);
+                Console.Beep(100, 1500);
+            }
         }
 
         public static void PlayInvalidCharacterSound()
