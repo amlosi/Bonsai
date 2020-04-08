@@ -11,9 +11,7 @@ namespace RetroPiDay.Games.Simon.OMF
     class EDSInteraction
     {
         private static HttpClient _client = new HttpClient();
-        private static string _omfUrl = "http://localhost:5590/api/v1/tenants/default/namespaces/default/omf/";
         private static string _streamUrl = $"http://localhost:5590/api/v1/tenants/default/namespaces/default/streams/";
-        private static string _dataLastUrl = @$"http://localhost:5590/api/v1/tenants/default/namespaces/default/streams/{0}/Last";
         private static string _typeUrl = $"http://localhost:5590/api/v1/tenants/default/namespaces/default/types/";
         private static string _streamDataUrl = $"http://localhost:5590/api/v1/tenants/default/namespaces/default/streams/TopTenScores/Data";
         private static string _topTen = "TopTen";
@@ -36,11 +34,17 @@ namespace RetroPiDay.Games.Simon.OMF
         {
             UserScore val = GetLastDataValue(user);
 
+            if(val.ScoreKey == default)
+            {
+                val.Score = 12;
+                val.ScoreKey = 0;
+            }
+
             val.ScoreKey++;
             val.Score = score;
 
-            var newScore = JsonSerializer.Serialize(val);
-            SendUserScore(newScore, user);
+            
+            SendUserScore(val, user);
 
         }
 
@@ -90,7 +94,7 @@ namespace RetroPiDay.Games.Simon.OMF
         private UserScore GetLastDataValue(string user)
         {
             HttpResponseMessage returnCode = default;
-            string _url = string.Format(_dataLastUrl, user);
+            string _url = _streamUrl + user + "/data/last";
             try
             {
                 returnCode = _client.GetAsync(_url).Result;
@@ -100,20 +104,33 @@ namespace RetroPiDay.Games.Simon.OMF
                 Console.WriteLine(e);
             }
 
+            if(returnCode.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new UserScore();
+            }
+
             return JsonSerializer.Deserialize<UserScore>(returnCode.Content.ReadAsStringAsync().Result);
         }
 
-        private bool SendUserScore(string json, string stream)
+        private bool SendUserScore(UserScore val, string stream)
         {
             HttpResponseMessage returnCode = default;
-            
+            UserStream user = new UserStream();
+            user.ContainerId = stream;
+            user.Add(val);
+            var newScore = JsonSerializer.Serialize(user.Values);
+            var content = new StringContent(newScore, Encoding.UTF8, "application/json");
+            string _url = _streamUrl + stream + "/" + "data";
             try
             {
-                returnCode = _client.GetAsync(_omfUrl).Result;
+                returnCode = _client.PostAsync(_url, content).Result;
+                returnCode.EnsureSuccessStatusCode();
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                return false;
             }
 
         }
