@@ -5,22 +5,22 @@ namespace RetroPiDay.Games.Simon
 {
     public class SimonSequence
     {
-
         public static ConsoleColor[] simonColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.Yellow };
-        
-        public static void DisplayListOfColors(int [] colorList, int delayInMs)
+        public static char[] simonChars = { 'r', 'b', 'g', 'y' };
+
+        public static void DisplayListOfButtons(Button[] colorList, int delayInMs)
         {
             Console.Clear();
             for (int i = 0; i < colorList.Length; i++)
             {
                 Console.WriteLine();
-                int colorIndex = colorList[i];
+                Button colorIndex = colorList[i];
                 for (int x = 0; x < 4; x++)
                 {
                     Console.ResetColor();
-                    if (colorIndex == x)
+                    if (colorIndex.character == simonChars[x])
                     {
-                        ConsoleColor conColor = simonColors[x];
+                        ConsoleColor conColor = colorIndex.color;
                         Console.BackgroundColor = conColor;
                         string colorName = conColor.ToString();
                         Console.Write("\t" + colorName);
@@ -65,15 +65,18 @@ namespace RetroPiDay.Games.Simon
             }
         }
 
-        public static int [] GenerateListOfColors(int len)
+        public static Button[] GenerateListOfButtons(int len)
         {
             Random random = new Random();
-            int [] colorList = new int[len];
+            Button[] colorList = new Button[len];
             for (int i = 0; i < len; i++)
             {
                 //gen random color
                 int r = random.Next(0, 4);
-                colorList[i] = r;
+                Button button = new Button();
+                button.character = simonChars[r];
+                button.color = simonColors[r];
+                colorList[i] = button;
             }
             return colorList;
         }
