@@ -18,6 +18,7 @@ namespace RetroPiDay.Games.Simon
                 Console.Clear();
                 Console.BackgroundColor = button.color;
                 Console.WriteLine(button.character);
+                Console.ResetColor();
 
                 Sounds.PlaySoundForColor(button.color);
                 Thread.Sleep((int)(0.75 * delayInMs));
