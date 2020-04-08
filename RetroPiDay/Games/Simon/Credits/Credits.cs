@@ -79,14 +79,13 @@ namespace RetroPiDay.Games.Simon
             int color = 0;
             while (pos < _devs.Count)
             {
+                InitReel();
                 Console.Clear();
                 color = UpdateColor(color);
                 UpdateReel(pos);
                 PrintCredit();
                 Thread.Sleep(1500);
-                pos++;
-                InitReel();
-                
+                pos++;   
             }
 
         }
