@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Simon
+namespace RetroPiDay.Games.Simon
 {
     public static class Sounds
     {
