@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Threading;
 
 namespace RetroPiDay.Games.Simon
@@ -9,6 +10,8 @@ namespace RetroPiDay.Games.Simon
     {
         private Credits exitCredits = new Credits();
         private Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
+        private int sequenceMaxSize = 128;
+        private int sequenceSpeedinMS = 350;
 
         public Simon()
         {
@@ -17,8 +20,8 @@ namespace RetroPiDay.Games.Simon
         public void Intro()
         {
             Console.Clear();
-            Display.Show();
-            Thread.Sleep(5000);
+            Sounds.PlayIntroSong();
+            Display.DisplaySplashScreen();
         }
 
         public void Outro()
@@ -30,53 +33,50 @@ namespace RetroPiDay.Games.Simon
         public void PlayGame()
         {
             Console.Clear();
-            Console.WriteLine("When you are ready to start press enter");
+            Console.WriteLine("Memorize the sequence and repeat it back using the keys r, g, b, and y to represent there respective colors.");
+            Console.WriteLine("When you are ready to start press enter.");
             Console.ReadLine();
 
-            List<char> sequence = GenerateRandomSequence();
-            PlaySequence(sequence);
-            var isWin = ValidateUserInput(sequence);
+            var fullSequence = SimonSequence.GenerateSequence(sequenceMaxSize);
+
+            var round = 1;
+            while (round <= fullSequence.Length)
+            {
+                var partialSequence = fullSequence.Take(round).ToArray();
+                SimonSequence.PlaySequence(partialSequence, sequenceSpeedinMS);
+                Console.WriteLine("Enter the sequence when ready");
+                var isWin = ValidateUserInput(partialSequence);
+                if (!isWin)
+                {
+                    Lose();
+                    return;
+                }
+
+                round++;
+            }
 
             score.DisplayScore();
-            if (isWin)
-                Win();
-            else
-                Lose();
+            Win();
         }
 
-        private bool ValidateUserInput(List<char> sequence)
+        private bool ValidateUserInput(Button[] sequence)
         {
             int i = 0;
             do
             {
-                Console.Clear();
-
-                var inputChar = Console.ReadKey().KeyChar;
-                if (Char.ToLower(inputChar) != sequence[i])
+                var inputChar = Console.ReadKey(true).KeyChar;
+                Display.DisplayButton(inputChar);
+                if (!Buttons.isValidButtonInput(inputChar) ||
+                    Char.ToLowerInvariant(inputChar) != sequence[i].character)
                 {
                     return false;
                 }
 
                 i++;
             }
-            while (i < sequence.Count);
+            while (i < sequence.Length);
 
             return true;
-        }
-
-        private List<char> GenerateRandomSequence()
-        {
-            return new List<char>() { 'r', 'g', 'b', 'y' };
-        }
-
-        private void PlaySequence(List<char> sequence)
-        {
-            foreach (var item in sequence)
-            {
-                Console.Clear();
-                Console.WriteLine(item);
-                Thread.Sleep(200);
-            }
         }
 
         private void Win()

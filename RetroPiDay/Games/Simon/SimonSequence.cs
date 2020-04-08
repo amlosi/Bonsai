@@ -3,82 +3,53 @@ using System.Threading;
 
 namespace RetroPiDay.Games.Simon
 {
-    public class SimonSequence
+    public static class SimonSequence
     {
-        public static ConsoleColor[] simonColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.Yellow };
-        public static char[] simonChars = { 'r', 'b', 'g', 'y' };
+        private static Random random = new Random();
 
-        public static void DisplayListOfButtons(Button[] colorList, int delayInMs)
+        public static void PlaySequence(Button[] buttonList, int delayInMs)
         {
-            Console.Clear();
-            for (int i = 0; i < colorList.Length; i++)
+            for (int i = 0; i < buttonList.Length; i++)
             {
-                Console.WriteLine();
-                Button colorIndex = colorList[i];
-                for (int x = 0; x < 4; x++)
-                {
-                    Console.ResetColor();
-                    if (colorIndex.character == simonChars[x])
-                    {
-                        ConsoleColor conColor = colorIndex.color;
-                        Console.BackgroundColor = conColor;
-                        string colorName = conColor.ToString();
-                        Console.Write("\t" + colorName);
+                var button = buttonList[i];
 
-                        Sounds.PlaySoundForColor(conColor);
+                // display button and play sound
+                Display.DisplayButton(button.character);
+                Sounds.PlaySoundForColor(button.color);
+                Thread.Sleep((int)(0.75 * delayInMs));
 
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.ResetColor();
-                        string colorName = simonColors[x].ToString();
-                        Console.Write("\t" + colorName);
-                    }
-                    if (x == 1)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine();
-                    }
-                    else Console.Write("     ");
-                }
-                Thread.Sleep(delayInMs);
-                Console.Clear();
-                Console.WriteLine();
-                //show it empty so that repeated colors are seen.
-                for (int x = 0; x < 4; x++)
-                {
-                    Console.ResetColor();
-                    string colorName = simonColors[x].ToString();
-                    Console.Write("\t" + colorName);
-
-                    if (x == 1)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine();
-                    }
-                    else Console.Write("     ");
-                }
-
-                Thread.Sleep(100);
-                Console.Clear();
+                // show 
+                Display.DisplayBlank();
+                Thread.Sleep((int)(0.25 * delayInMs));
             }
         }
 
-        public static Button[] GenerateListOfButtons(int len)
+        public static Button[] GenerateSequence(int len)
         {
-            Random random = new Random();
-            Button[] colorList = new Button[len];
+            Button[] buttonList = new Button[len];
             for (int i = 0; i < len; i++)
             {
-                //gen random color
-                int r = random.Next(0, 4);
-                Button button = new Button();
-                button.character = simonChars[r];
-                button.color = simonColors[r];
-                colorList[i] = button;
+                buttonList[i] = GetRandomButton();
             }
-            return colorList;
+            return buttonList;
+        }
+
+        private static Button GetRandomButton()
+        {
+            int r = random.Next(0, 4);
+            switch(r)
+            {
+                case 0:
+                    return Buttons.Red;
+                case 1:
+                    return Buttons.Blue;
+                case 2:
+                    return Buttons.Green;
+                case 3:
+                    return Buttons.Yellow;
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

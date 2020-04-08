@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RetroPiDay.Games.Simon
 {
@@ -59,13 +60,16 @@ namespace RetroPiDay.Games.Simon
 
         public static void PlayIntroSong()
         {
-            PlaySoundForColor(ConsoleColor.Green);
-            PlaySoundForColor(ConsoleColor.Green);
-            PlaySoundForColor(ConsoleColor.Red);
-            PlaySoundForColor(ConsoleColor.Red);
-            PlaySoundForColor(ConsoleColor.Yellow);
-            PlaySoundForColor(ConsoleColor.Yellow);
-            PlaySoundForColor(ConsoleColor.Blue);
+            var t = Task.Run(() =>
+            {
+                PlaySoundForColor(ConsoleColor.Green);
+                PlaySoundForColor(ConsoleColor.Green);
+                PlaySoundForColor(ConsoleColor.Red);
+                PlaySoundForColor(ConsoleColor.Red);
+                PlaySoundForColor(ConsoleColor.Yellow);
+                PlaySoundForColor(ConsoleColor.Yellow);
+                PlaySoundForColor(ConsoleColor.Blue);
+            });
         }
     }
 }

@@ -7,13 +7,6 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
-            /*
-            Console.BufferHeight = 40;
-            Console.WindowHeight = 40;
-            Console.WindowWidth = 85;
-            Console.BufferWidth = 85;
-            */
-
             bool success = false;
             while (!success)
             {
