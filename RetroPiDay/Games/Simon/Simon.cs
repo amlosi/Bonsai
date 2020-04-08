@@ -6,6 +6,9 @@ namespace RetroPiDay.Games.Simon
 {
     public class Simon : IGame
     {
+        private Credits exitCredits = new Credits();
+        private Score score = new Score();
+
         public Simon(Settings settings)
         {
         }
@@ -19,8 +22,7 @@ namespace RetroPiDay.Games.Simon
 
         public void Outro()
         {
-            Console.Clear();
-            Console.WriteLine("This is an outro!");
+            exitCredits.RollReel();
             Thread.Sleep(1000);
         }
 
@@ -34,6 +36,7 @@ namespace RetroPiDay.Games.Simon
             PlaySequence(sequence);
             var isWin = ValidateUserInput(sequence);
 
+            score.DisplayScore();
             if (isWin)
                 Win();
             else
@@ -47,8 +50,7 @@ namespace RetroPiDay.Games.Simon
             {
                 Console.Clear();
 
-                var inputChar = Console.ReadKey(true).KeyChar;
-                SendToConsole(inputChar);
+                var inputChar = Console.ReadKey().KeyChar;
                 if (Char.ToLower(inputChar) != sequence[i])
                 {
                     return false;

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace SimonScreens
+namespace RetroPiDay.Games.Simon
 {
     class Score
     {
