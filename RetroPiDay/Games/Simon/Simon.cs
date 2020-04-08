@@ -67,11 +67,14 @@ namespace RetroPiDay.Games.Simon
             {
                 var inputChar = Console.ReadKey(true).KeyChar;
                 Display.DisplayButton(inputChar);
+                
                 if (!Buttons.isValidButtonInput(inputChar) ||
                     Char.ToLowerInvariant(inputChar) != sequence[i].character)
                 {
                     return false;
                 }
+
+                Sounds.PlaySoundForColorKey(inputChar);
 
                 i++;
             }
