@@ -50,9 +50,13 @@ namespace Simon
 
         public static void PlayIntroSong()
         {
-            Console.Beep(2000, 100);
-            Console.Beep(2100, 200);
-            Console.Beep(2500, 300);
+            PlaySoundForColor(ConsoleColor.Green);
+            PlaySoundForColor(ConsoleColor.Green);
+            PlaySoundForColor(ConsoleColor.Red);
+            PlaySoundForColor(ConsoleColor.Red);
+            PlaySoundForColor(ConsoleColor.Yellow);
+            PlaySoundForColor(ConsoleColor.Yellow);
+            PlaySoundForColor(ConsoleColor.Blue);
         }
     }
 }
