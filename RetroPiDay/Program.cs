@@ -1,5 +1,4 @@
 ﻿using RetroPiDay.Games.Simon;
-using RetroPiDay.Games.Simon.OMF;
 using System;
 
 namespace RetroPiDay
@@ -13,7 +12,7 @@ namespace RetroPiDay
             {
                 MainMenuDisplayOptions();
                 success = true;
-                var keyInfo= Console.ReadKey();
+                var keyInfo = Console.ReadKey();
 
                 char mainMenuInput = keyInfo.KeyChar;
                 switch (mainMenuInput)
@@ -35,10 +34,12 @@ namespace RetroPiDay
             }
         }
 
-                Console.Clear();
-                Console.WriteLine("Starting a new game, press Ctrl+c to quit.");
-                Thread.Sleep(5000);
-            }
+        private static void MainMenuDisplayOptions()
+        {
+            Console.Clear();
+            Console.WriteLine("Main Menu:");
+            Console.WriteLine("  'n': New Game");
+            Console.WriteLine("  'x': Exit");
         }
     }
 }
