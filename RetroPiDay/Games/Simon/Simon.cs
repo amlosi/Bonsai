@@ -44,6 +44,7 @@ namespace RetroPiDay.Games.Simon
             {
                 var partialSequence = fullSequence.Take(round).ToArray();
                 SimonSequence.PlaySequence(partialSequence, sequenceSpeedinMS);
+                Display.DisplayBlank();
                 Console.WriteLine("Enter the sequence when ready");
                 var isWin = ValidateUserInput(partialSequence);
                 if (!isWin)
@@ -52,6 +53,10 @@ namespace RetroPiDay.Games.Simon
                     Lose();
                     return;
                 }
+
+                Console.WriteLine("");
+                Console.WriteLine($"Great job!  You got all colors right!");
+                Thread.Sleep(2000);
 
                 round++;
             }
