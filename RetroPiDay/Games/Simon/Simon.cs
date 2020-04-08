@@ -7,7 +7,7 @@ namespace RetroPiDay.Games.Simon
     public class Simon : IGame
     {
         private Credits exitCredits = new Credits();
-        private Score score = new Score();
+        private Score score = new Score("screwBall");
 
         public Simon()
         {
