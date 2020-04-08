@@ -47,6 +47,7 @@ namespace RetroPiDay.Games.Simon
                 var isWin = ValidateUserInput(partialSequence);
                 if (!isWin)
                 {
+                    Sounds.PlayInvalidCharacterSound();
                     Lose();
                     return;
                 }
