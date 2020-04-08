@@ -275,17 +275,21 @@ namespace RetroPiDay.Games.Simon
             {
                 DisplayGreen();
             }
-            if (c == 'r')
+            else if (c == 'r')
             {
                 DisplayRed();
             }
-            if (c == 'y')
+            else if (c == 'y')
             {
                 DisplayYellow();
             }
-            if (c == 'b')
+            else if (c == 'b')
             {
                 DisplayBlue();
+            }
+            else
+            {
+                DisplayBlank();
             }
         }
 
