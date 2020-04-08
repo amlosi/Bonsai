@@ -6,6 +6,5 @@ namespace RetroPiDay.Games.Simon
     {
         public char character;
         public ConsoleColor color;
-        public int frequency;
     }
 }
