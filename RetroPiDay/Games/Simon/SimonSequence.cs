@@ -14,18 +14,12 @@ namespace RetroPiDay.Games.Simon
                 var button = buttonList[i];
 
                 // display button and play sound
-                //Display.Display(button);
-                Console.Clear();
-                Console.BackgroundColor = button.color;
-                Console.WriteLine(button.character);
-                Console.ResetColor();
-
+                Display.DisplayButton(button.character);
                 Sounds.PlaySoundForColor(button.color);
                 Thread.Sleep((int)(0.75 * delayInMs));
 
                 // show 
-                //Display.Display();
-                Console.Clear();
+                Display.DisplayBlank();
                 Thread.Sleep((int)(0.25 * delayInMs));
             }
         }

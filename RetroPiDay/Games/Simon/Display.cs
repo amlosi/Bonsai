@@ -1027,6 +1027,8 @@ namespace RetroPiDay.Games.Simon
 
         public static void DisplayBlank()
         {
+            Console.Clear();
+
             // line number
             // 1,2
             Console.BackgroundColor = ConsoleColor.Black;

@@ -32,7 +32,8 @@ namespace RetroPiDay.Games.Simon
         public void PlayGame()
         {
             Console.Clear();
-            Console.WriteLine("When you are ready to start press enter");
+            Console.WriteLine("Memorize the sequence and repeat it back using the keys r, g, b, and y to represent there respective colors.");
+            Console.WriteLine("When you are ready to start press enter.");
             Console.ReadLine();
 
             var fullSequence = SimonSequence.GenerateSequence(sequenceMaxSize);
@@ -42,6 +43,7 @@ namespace RetroPiDay.Games.Simon
             {
                 var partialSequence = fullSequence.Take(round).ToArray();
                 SimonSequence.PlaySequence(partialSequence, sequenceSpeedinMS);
+                Console.WriteLine("Enter the sequence when ready");
                 var isWin = ValidateUserInput(partialSequence);
                 if (!isWin)
                 {
@@ -61,10 +63,10 @@ namespace RetroPiDay.Games.Simon
             int i = 0;
             do
             {
-                Console.Clear();
-
-                var inputChar = Console.ReadKey().KeyChar;
-                if (!Buttons.isValidButtonInput(inputChar))
+                var inputChar = Console.ReadKey(true).KeyChar;
+                Display.DisplayButton(inputChar);
+                if (!Buttons.isValidButtonInput(inputChar) ||
+                    Char.ToLowerInvariant(inputChar) != sequence[i].character)
                 {
                     return false;
                 }
