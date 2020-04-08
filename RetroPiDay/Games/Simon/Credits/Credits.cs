@@ -40,16 +40,13 @@ namespace RetroPiDay.Games.Simon
             _colors.Add(ConsoleColor.Blue);
             _colors.Add(ConsoleColor.Yellow);
             _colors.Add(ConsoleColor.Green);
-
-            Console.ForegroundColor = ConsoleColor.Black;
-
-            InitReel();
         }
 
         private void InitReel()
         {
             ClearReelLines();
             Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Black;
         }
 
         private void ClearReelLines()
@@ -82,14 +79,13 @@ namespace RetroPiDay.Games.Simon
             int color = 0;
             while (pos < _devs.Count)
             {
+                InitReel();
                 Console.Clear();
                 color = UpdateColor(color);
                 UpdateReel(pos);
                 PrintCredit();
                 Thread.Sleep(1500);
-                pos++;
-                InitReel();
-                
+                pos++;   
             }
 
         }
