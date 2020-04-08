@@ -1,4 +1,5 @@
 ﻿using RetroPiDay.Games.Simon;
+using RetroPiDay.Games.Simon.OMF;
 using System;
 using System.Threading;
 
@@ -8,17 +9,19 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
-            while (true)
-            {
-                var game = new Simon(new Settings());
-                game.Intro();
-                game.PlayGame();
-                game.Outro();
+            EDSInteraction eds = new EDSInteraction("pasta");
 
-                Console.Clear();
-                Console.WriteLine("Starting a new game, press Ctrl+c to quit.");
-                Thread.Sleep(5000);
-            }
+            //while (true)
+            //{
+            //    var game = new Simon(new Settings());
+            //    game.Intro();
+            //    game.PlayGame();
+            //    game.Outro();
+
+            //    Console.Clear();
+            //    Console.WriteLine("Starting a new game, press Ctrl+c to quit.");
+            //    Thread.Sleep(5000);
+            //}
         }
     }
 }
