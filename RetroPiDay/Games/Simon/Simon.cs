@@ -6,8 +6,8 @@ namespace RetroPiDay.Games.Simon
 {
     public class Simon : IGame
     {
-        ////private Credits exitCredits = new Credits();
-        ////private Score score = new Score();
+        private Credits exitCredits = new Credits();
+        private Score score = new Score();
 
         public Simon(Settings settings)
         {
@@ -22,7 +22,7 @@ namespace RetroPiDay.Games.Simon
 
         public void Outro()
         {
-            //exitCredits.RollReel();
+            exitCredits.RollReel();
             Thread.Sleep(1000);
         }
 
@@ -36,7 +36,7 @@ namespace RetroPiDay.Games.Simon
             PlaySequence(sequence);
             var isWin = ValidateUserInput(sequence);
 
-            //score.DisplayScore();
+            score.DisplayScore();
             if (isWin)
                 Win();
             else
