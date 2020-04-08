@@ -9,9 +9,9 @@ namespace RetroPiDay.Games.Simon.OMF
 
         public class UserScore
         {
-            public int ScoreKey { get; set; }
+            public int ScoreKey { get; set; } = 0;
 
-            public int Score { get; set; }
+            public int Score { get; set; } = 0;
         }
 
         public class HighScores

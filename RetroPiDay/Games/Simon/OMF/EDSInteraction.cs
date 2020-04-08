@@ -34,16 +34,9 @@ namespace RetroPiDay.Games.Simon.OMF
         {
             UserScore val = GetLastDataValue(user);
 
-            if(val.ScoreKey == default)
-            {
-                val.Score = 12;
-                val.ScoreKey = 0;
-            }
-
             val.ScoreKey++;
             val.Score = score;
-
-            
+   
             SendUserScore(val, user);
 
         }
