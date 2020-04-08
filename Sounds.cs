@@ -5,27 +5,42 @@ namespace Simon
 {
     public static class Sounds
     {
-        private static Dictionary<char, int> _colorSounds = new Dictionary<char, int>();
+        private static Dictionary<char, int> _colorKeySounds = new Dictionary<char, int>();
+        private static Dictionary<ConsoleColor, int> _colorSounds = new Dictionary<ConsoleColor, int>();
 
         static Sounds()
         {
             int baseFreq = 900;
 
-            _colorSounds.Add('g', baseFreq);
-            _colorSounds.Add('r', (int)(baseFreq * .75));
-            _colorSounds.Add('b', (int)(baseFreq * .50));
-            _colorSounds.Add('y', (int)(baseFreq * .25));
+            _colorKeySounds.Add('g', baseFreq);
+            _colorKeySounds.Add('r', (int)(baseFreq * .75));
+            _colorKeySounds.Add('b', (int)(baseFreq * .50));
+            _colorKeySounds.Add('y', (int)(baseFreq * .25));
+
+            _colorSounds.Add(ConsoleColor.Green, baseFreq);
+            _colorSounds.Add(ConsoleColor.Red, (int)(baseFreq * .75));
+            _colorSounds.Add(ConsoleColor.Blue, (int)(baseFreq * .50));
+            _colorSounds.Add(ConsoleColor.Yellow, (int)(baseFreq * .25));
+
         }
 
-        public static void PlaySoundForColor(char color)
+        public static void PlaySoundForColorKey(char color)
         {
-            if (_colorSounds.TryGetValue(color, out int frequency))
+            if (_colorKeySounds.TryGetValue(color, out int frequency))
             {
                 Console.Beep(frequency, 500);
             }
             else
             {
                 PlayInvalidCharacterSound();
+            }
+        }
+
+        public static void PlaySoundForColor(ConsoleColor color)
+        {
+            if (_colorSounds.TryGetValue(color, out int frequency))
+            {
+                Console.Beep(frequency, 500);
             }
         }
 
@@ -36,6 +51,9 @@ namespace Simon
 
         public static void PlayIntroSong()
         {
+            Console.Beep(2000, 100);
+            Console.Beep(2100, 200);
+            Console.Beep(2500, 300);
         }
     }
 }
