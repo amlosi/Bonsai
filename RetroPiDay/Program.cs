@@ -8,22 +8,46 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
+            /*
             Console.BufferHeight = 40;
             Console.WindowHeight = 40;
             Console.WindowWidth = 85;
             Console.BufferWidth = 85;
+            */
 
-            while (true)
+            bool success = false;
+            while (!success)
             {
-                var game = new Simon(new Settings());
-                game.Intro();
-                game.PlayGame();
-                game.Outro();
+                MainMenuDisplayOptions();
+                success = true;
+                var keyInfo= Console.ReadKey();
 
-                Console.Clear();
-                Console.WriteLine("Starting a new game, press Ctrl+c to quit.");
-                Thread.Sleep(5000);
+                char mainMenuInput = keyInfo.KeyChar;
+                switch (mainMenuInput)
+                {
+                    case 'n':
+                        var game = new Simon();
+                        game.Intro();
+                        game.PlayGame();
+                        game.Outro();
+                        break;
+                    case 'x':
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        success = false;
+                        Console.WriteLine("bad input. try again.");
+                        break;
+                }
             }
+        }
+
+        private static void MainMenuDisplayOptions()
+        {
+            Console.Clear();
+            Console.WriteLine("Main Menu:");
+            Console.WriteLine("  'n': New Game");
+            Console.WriteLine("  'x': Exit");
         }
     }
 }

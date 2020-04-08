@@ -9,7 +9,7 @@ namespace RetroPiDay.Games.Simon
         private Credits exitCredits = new Credits();
         private Score score = new Score();
 
-        public Simon(Settings settings)
+        public Simon()
         {
         }
 
