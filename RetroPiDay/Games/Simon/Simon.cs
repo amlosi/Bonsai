@@ -8,7 +8,7 @@ namespace RetroPiDay.Games.Simon
     public class Simon : IGame
     {
         private Credits exitCredits = new Credits();
-        private Score score = new Score();
+        private Score score = new Score("greg");
         private int sequenceMaxSize = 128;
         private int sequenceSpeedinMS = 350;
 
@@ -20,7 +20,6 @@ namespace RetroPiDay.Games.Simon
         {
             Console.Clear();
             Display.Show();
-            Thread.Sleep(5000);
         }
 
         public void Outro()
