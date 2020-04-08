@@ -19,6 +19,7 @@ namespace RetroPiDay.Games.Simon
         public void Intro()
         {
             Console.Clear();
+            Sounds.PlayIntroSong();
             Display.DisplaySplashScreen();
         }
 
