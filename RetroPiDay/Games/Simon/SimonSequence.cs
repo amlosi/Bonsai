@@ -7,20 +7,7 @@ namespace RetroPiDay.Games.Simon
     {
 
         public static ConsoleColor[] simonColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.Yellow };
-        public static void FOOMain(string[] args)
-        {
-            Console.WriteLine("Greetings Professor, Would you like to play a game?");
-            Console.ReadLine();
-
-            int len = 8;
-            int delay = 1500;
-
-            int [] sequence = GenerateListOfColors(len);
-            DisplayListOfColors(sequence, delay);
-
-            Console.ResetColor();
-            Console.WriteLine("Goodbye");
-        }
+        
         public static void DisplayListOfColors(int [] colorList, int delayInMs)
         {
             Console.Clear();
