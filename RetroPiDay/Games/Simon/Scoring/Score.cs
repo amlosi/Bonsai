@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace RetroPiDay.Games.Simon
@@ -9,13 +10,18 @@ namespace RetroPiDay.Games.Simon
 
         public int HighScore { get; set; }
 
+        public string Player { get; set; } = "The PI System";
+
         private string _filePath = Directory.GetCurrentDirectory() + "/HighScore.txt";
 
         private string _scores = "";
 
-        public Score()
+        private Dictionary<string, List<int>> Scores = new Dictionary<string, List<int>>();
+
+        public Score(string _playerName)
         {
             ReadHighScore();
+            Player = _playerName;
         }
 
         public void RecordHighScore()
@@ -47,7 +53,7 @@ namespace RetroPiDay.Games.Simon
         {
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
-            _scores = $"\t     Current Score: {CurrentScore}        High Score: {HighScore}     ";
+            _scores = $"\tPlayer: {Player}     Current Score: {CurrentScore}        High Score: {HighScore}     ";
             Console.WriteLine(_scores);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
