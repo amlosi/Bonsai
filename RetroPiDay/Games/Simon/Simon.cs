@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace RetroPiDay.Games.Simon
@@ -8,8 +9,10 @@ namespace RetroPiDay.Games.Simon
     {
         private Credits exitCredits = new Credits();
         private Score score = new Score();
+        private int sequenceMaxSize = 128;
+        private int sequenceSpeedinMS = 350;
 
-        public Simon(Settings settings)
+        public Simon()
         {
         }
 
@@ -32,18 +35,28 @@ namespace RetroPiDay.Games.Simon
             Console.WriteLine("When you are ready to start press enter");
             Console.ReadLine();
 
-            List<char> sequence = GenerateRandomSequence();
-            PlaySequence(sequence);
-            var isWin = ValidateUserInput(sequence);
+            var fullSequence = SimonSequence.GenerateSequence(sequenceMaxSize);
+
+            var round = 1;
+            while (round <= fullSequence.Length)
+            {
+                var partialSequence = fullSequence.Take(round).ToArray();
+                SimonSequence.PlaySequence(partialSequence, sequenceSpeedinMS);
+                var isWin = ValidateUserInput(partialSequence);
+                if (!isWin)
+                {
+                    Lose();
+                    return;
+                }
+
+                round++;
+            }
 
             score.DisplayScore();
-            if (isWin)
-                Win();
-            else
-                Lose();
+            Win();
         }
 
-        private bool ValidateUserInput(List<char> sequence)
+        private bool ValidateUserInput(Button[] sequence)
         {
             int i = 0;
             do
@@ -51,31 +64,16 @@ namespace RetroPiDay.Games.Simon
                 Console.Clear();
 
                 var inputChar = Console.ReadKey().KeyChar;
-                if (Char.ToLower(inputChar) != sequence[i])
+                if (!Buttons.isValidButtonInput(inputChar))
                 {
                     return false;
                 }
 
                 i++;
             }
-            while (i < sequence.Count);
+            while (i < sequence.Length);
 
             return true;
-        }
-
-        private List<char> GenerateRandomSequence()
-        {
-            return new List<char>() { 'r', 'g', 'b', 'y' };
-        }
-
-        private void PlaySequence(List<char> sequence)
-        {
-            foreach (var item in sequence)
-            {
-                Console.Clear();
-                Console.WriteLine(item);
-                Thread.Sleep(200);
-            }
         }
 
         private void Win()
