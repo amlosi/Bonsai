@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using static RetroPiDay.Games.Simon.Models;
 using UserScore = RetroPiDay.Games.Simon.Models.UserScore;
 using UserStream = RetroPiDay.Games.Simon.Models.UserStream;
 
@@ -230,7 +230,7 @@ namespace RetroPiDay.Games.Simon
 
         public async Task<Models.TopTenStream> GetHighScores()
         {
-            var url = _streamUrl + "TopTen";
+            var url = _streamUrl + _topTen;
 
             try
             {
@@ -257,11 +257,11 @@ namespace RetroPiDay.Games.Simon
 
         public async Task PutHighScore(Score myScore)
         {
-            var url = _streamUrl + "TopTen";
+            var baseUrl = _streamUrl + _topTen;
 
             try
             {
-                var response = await _client.GetAsync(url);
+                var response = await _client.GetAsync(baseUrl + "/data?startIndex=0&count=10");
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
                     return;
@@ -269,75 +269,78 @@ namespace RetroPiDay.Games.Simon
                 else
                 {
                     string highScoresString = await response.Content.ReadAsStringAsync();
+                    List<HighScores> highScores = JsonSerializer.Deserialize<List<HighScores>>(highScoresString);
+                    List<HighScores> updatedHighScores = new List<HighScores>();
+                    HighScores myHighScore = null;
+                    HighScores lowestExistingScore = null;
+                    string json = null;
+                    StringContent content = null;
+                    HttpResponseMessage returnCode = null;
 
-                    Models.TopTenStream highScores = JsonSerializer.Deserialize<Models.TopTenStream>(highScoresString);
-
-                    int index;
-                    if (highScores.HighScorers.Count == 0)
+                    const int maxBoardLength = 10;
+                    int myHighScoreIndex = maxBoardLength + 1;
+                    foreach (var scorer in highScores)
                     {
-                        index = 1;
-                    }
-                    else
-                    {
-                        index = highScores.HighScorers.Count + 1;
-                        // Find rank
-                        foreach (var scorer in highScores.HighScorers)
+                        if (myScore.CurrentScore > scorer.Score)
                         {
-                            if (scorer.Score < myScore.CurrentScore && scorer.ScoreKey < index)
-                            {
-                                index = scorer.Score;
-                            }
-                        }
-                    }
+                            // Beat him/her/they!
 
-                    if (index <= 10)
-                    {
-                        if (index < (highScores.HighScorers.Count + 1))
-                        {
-                            // demotions
-                            foreach (var scorer in highScores.HighScorers)
+                            if (scorer.ScoreKey == maxBoardLength)
                             {
-                                if (scorer.ScoreKey >= index)
-                                {
-                                    scorer.ScoreKey++;
-                                }
+                                // scorer drops off of top-10 list.  Re-use its object.
+                                myHighScore = scorer;
                             }
-                        }
+                            else if (scorer.ScoreKey == highScores.Count)
+                            {
+                                // Keep track of lowest scoring one.  Will do a POST on this one because it will be new.
+                                lowestExistingScore = scorer;
+                            }
 
-                        if (highScores.HighScorers.Count < 10)
-                        {
-                            // New Scorer
-                            var scorer = new Models.HighScores() { ScoreKey = index, Score = myScore.CurrentScore, Username = myScore.Player };
-                            highScores.HighScorers.Add(scorer);
-                        }
-                        else
-                        {
-                            // Replace Existing scorer (was #10)
-                            foreach (var scorer in highScores.HighScorers)
+                            // Update my index in rankings.  Will fill in later.
+                            if (scorer.ScoreKey < myHighScoreIndex)
                             {
-                                if (scorer.ScoreKey == 11)
-                                {
-                                    scorer.ScoreKey = index;
-                                    scorer.Score = myScore.CurrentScore;
-                                    scorer.Username = myScore.Player;
-                                    break;
-                                }
+                                myHighScoreIndex = scorer.ScoreKey;
                             }
+
+                            // Push this one down in rankings.  Value will be ignored for one in spot 10->11.
+                            scorer.ScoreKey++;
+
+                            // Will need to update this scorer in cloud.
+                            updatedHighScores.Add(scorer);
                         }
                     }
 
-                    string json = JsonSerializer.Serialize<Models.TopTenStream>(highScores);
-                    var content = new StringContent("{" + json + "}", Encoding.UTF8, "application/json");
-                    HttpResponseMessage returnCode;
-                    if (highScores.HighScorers.Count > 1)
+                    bool doPost = false;
+                    // Create new object for me
+                    if (highScores.Count < maxBoardLength)
                     {
+                        // Room for one more in leader board.
+                        doPost = true;
+                        myHighScore = new HighScores();
+                        updatedHighScores.Add(myHighScore);
+                        if (myHighScoreIndex == (maxBoardLength + 1))
+                        {
+                            // I am lowest on the board
+                            myHighScoreIndex = highScores.Count + 1;
+                        }
+                    }
+
+                    if (myHighScore != null)
+                    {
+                        // Items need updating
+
+                        // Fill in my values
+                        myHighScore.ScoreKey = myHighScoreIndex;
+                        myHighScore.Score = myScore.CurrentScore;
+                        myHighScore.Username = myScore.Player;
+
+                        var url = baseUrl + "/data";
+
+                        json = JsonSerializer.Serialize<List<HighScores>>(updatedHighScores);
+                        content = new StringContent(json, Encoding.UTF8, "application/json");
                         returnCode = _client.PutAsync(url, content).Result;
+                        returnCode.EnsureSuccessStatusCode();
                     }
-                    else
-                    {
-                        returnCode = _client.PostAsync(url, content).Result;
-                    }
-                    returnCode.EnsureSuccessStatusCode();
                 }
             }
             catch (Exception e)
