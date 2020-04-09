@@ -58,7 +58,7 @@ namespace RetroPiDay.Games.Simon
             Console.Clear();
             var eds = new EDSInteraction("asdf");
             var highScores = eds.GetHighScores().Result;
-            if (highScores.Count < 1)
+            if(highScores == null || highScores.Count < 1)
             {
                 return;
             }
