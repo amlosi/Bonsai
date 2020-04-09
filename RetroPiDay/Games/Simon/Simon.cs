@@ -8,7 +8,9 @@ namespace RetroPiDay.Games.Simon
     public class Simon : IGame
     {
         private Credits exitCredits = new Credits();
-        private Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
+        private static string user = $"{Environment.UserName}@{Dns.GetHostName()}osisoft.com";
+        private Score score = new Score(user);
+        private EDSInteraction eds = new EDSInteraction(user);
         private int sequenceMaxSize = 128;
         private int sequenceSpeedinMS = 350;
 
@@ -21,10 +23,13 @@ namespace RetroPiDay.Games.Simon
             Console.Clear();
             Sounds.PlayIntroSong();
             Display.DisplaySplashScreen();
+            eds.GetHighScores().Wait();
+            //Set score.HighScore to the first score in eds.HighScores list
         }
 
         public void Outro()
         {
+            eds.UpdateUserScores(user, score.CurrentScore);
             exitCredits.RollReel();
             Thread.Sleep(1000);
         }
