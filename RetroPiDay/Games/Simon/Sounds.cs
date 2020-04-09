@@ -55,7 +55,7 @@ namespace RetroPiDay.Games.Simon
 
         public static void PlayInvalidCharacterSound()
         {
-            Console.Beep(100, 1500);
+            Console.Beep(300, 1500);
         }
 
         public static void PlayIntroSong()
