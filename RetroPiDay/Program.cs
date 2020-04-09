@@ -8,7 +8,23 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
-            while (true)
+            int width = Console.WindowWidth;
+            int height = Console.WindowHeight;
+
+            if (height < 40)
+            {
+                height = 40;            
+            }
+
+            if (width < 100)
+            {
+                width = 100;
+            }
+
+            Console.SetWindowSize(width, height);
+
+            bool success = false;
+            while (!success)
             {
                 MainMenuDisplayOptions();
                 var input = Console.ReadKey().KeyChar;
