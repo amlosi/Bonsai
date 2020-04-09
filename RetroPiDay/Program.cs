@@ -9,15 +9,6 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
-            Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
-            score.CurrentScore = 5;
-            score.RecordHighScore();
-
-            var scoreScreen = new HighScoreScreen();
-            scoreScreen.ShowHighScores();
-            Console.ReadKey();
-
-
             bool success = false;
             while (!success)
             {

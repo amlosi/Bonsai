@@ -7,6 +7,17 @@ namespace RetroPiDay.Games.Simon
 {
     class Score
     {
+        /*
+         * Test.  Create Unit test or put in main.
+            Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
+            score.CurrentScore = 5;
+            score.RecordHighScore();
+
+            var scoreScreen = new HighScoreScreen();
+            scoreScreen.ShowHighScores();
+            Console.ReadKey();
+        */
+
         public int CurrentScore { get; set; } = 0;
 
         public int HighScore { get; set; }

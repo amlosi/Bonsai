@@ -35,6 +35,11 @@ namespace RetroPiDay.Games.Simon.OMF
         {
             UserScore val = GetLastDataValue(user);
 
+            if (val == null)
+            {
+                val = new UserScore();
+            }
+
             val.ScoreKey++;
             val.Score = score;
    
@@ -158,6 +163,46 @@ namespace RetroPiDay.Games.Simon.OMF
             }
         }
 
+        public int UserHighScore(string user)
+        {
+            HttpResponseMessage returnCode = default;
+            string _url = _streamUrl + user + "/data?startIndex=0&count=1000";
+            int max = 0;
+
+            List<UserScore> userScores = new List<UserScore>();
+            try
+            {
+                returnCode = _client.GetAsync(_url).Result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            if (returnCode.StatusCode == HttpStatusCode.NotFound)
+            {
+                return 0;
+            }
+            userScores = JsonSerializer.Deserialize<List<UserScore>>(returnCode.Content.ReadAsStringAsync().Result);
+
+            return FindUserMaxScore(userScores);
+        }
+
+        private int FindUserMaxScore(List<UserScore> userScores)
+        {
+            int max = 0;
+
+            foreach(var s in userScores)
+            {
+                if(s.Score > max)
+                {
+                    max = s.Score;
+                }
+            }
+
+            return max;
+        }
+
         private bool CheckIfStreamExists(string streamName)
         {
             HttpResponseMessage returnCode = default;
@@ -226,43 +271,71 @@ namespace RetroPiDay.Games.Simon.OMF
 
                     Models.TopTenStream highScores = JsonSerializer.Deserialize<Models.TopTenStream>(highScoresString);
 
-                    int index = 11;
-                    foreach (var scorer in highScores.HighScorers)
+                    int index;
+                    if (highScores.HighScorers.Count == 0)
                     {
-                        if (scorer.Score < myScore.CurrentScore && scorer.ScoreKey < index)
+                        index = 1;
+                    }
+                    else
+                    {
+                        index = highScores.HighScorers.Count + 1;
+                        // Find rank
+                        foreach (var scorer in highScores.HighScorers)
                         {
-                            index = scorer.Score;
+                            if (scorer.Score < myScore.CurrentScore && scorer.ScoreKey < index)
+                            {
+                                index = scorer.Score;
+                            }
                         }
                     }
 
-                    if (index < 11)
+                    if (index <= 10)
                     {
-                        // kick out #10
-                        foreach (var scorer in highScores.HighScorers)
+                        if (index < (highScores.HighScorers.Count + 1))
                         {
-                            if (scorer.ScoreKey >= index)
+                            // demotions
+                            foreach (var scorer in highScores.HighScorers)
                             {
-                                scorer.ScoreKey++;
-                                break;
+                                if (scorer.ScoreKey >= index)
+                                {
+                                    scorer.ScoreKey++;
+                                }
                             }
                         }
 
-                        // kick out #10
-                        foreach (var scorer in highScores.HighScorers)
+                        if (highScores.HighScorers.Count < 10)
                         {
-                            if (scorer.ScoreKey == 11)
+                            // New Scorer
+                            var scorer = new HighScores() { ScoreKey = index, Score = myScore.CurrentScore, Username = myScore.Player };
+                            highScores.HighScorers.Add(scorer);
+                        }
+                        else
+                        {
+                            // Replace Existing scorer (was #10)
+                            foreach (var scorer in highScores.HighScorers)
                             {
-                                scorer.ScoreKey = index;
-                                scorer.Score = myScore.CurrentScore;
-                                scorer.Username = myScore.Player;
-                                break;
+                                if (scorer.ScoreKey == 11)
+                                {
+                                    scorer.ScoreKey = index;
+                                    scorer.Score = myScore.CurrentScore;
+                                    scorer.Username = myScore.Player;
+                                    break;
+                                }
                             }
                         }
                     }
 
                     highScoresString = JsonSerializer.Serialize<Models.TopTenStream>(highScores);
                     var content = new StringContent("{" + highScoresString + "}", Encoding.UTF8, "application/json");
-                    var returnCode = _client.PutAsync(url, content).Result;
+                    HttpResponseMessage returnCode;
+                    if (highScores.HighScorers.Count > 1)
+                    {
+                        returnCode = _client.PutAsync(url, content).Result;
+                    }
+                    else
+                    {
+                        returnCode = _client.PostAsync(url, content).Result;
+                    }
                     returnCode.EnsureSuccessStatusCode();
                 }
             }
