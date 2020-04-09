@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace RetroPiDay.Games.Simon.OMF
+namespace RetroPiDay.Games.Simon
 {
-    class Models
+    public class Models
     {
 
         public class UserScore

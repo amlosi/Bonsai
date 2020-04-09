@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RetroPiDay.Games.Simon.OMF
+﻿namespace RetroPiDay.Games.Simon
 {
     class OMFStrings
     {

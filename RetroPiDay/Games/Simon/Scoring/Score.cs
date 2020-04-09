@@ -6,6 +6,17 @@ namespace RetroPiDay.Games.Simon
 {
     class Score
     {
+        /*
+         *  Test.  Create Unit test or put in main.
+            Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
+            score.CurrentScore = 5;
+            score.RecordHighScore();
+
+            var scoreScreen = new HighScoreScreen();
+            scoreScreen.ShowHighScores();
+            Console.ReadKey();
+        */
+
         public int CurrentScore { get; set; } = 0;
 
         public int HighScore { get; set; }
@@ -20,33 +31,14 @@ namespace RetroPiDay.Games.Simon
 
         public Score(string _playerName)
         {
-            ReadHighScore();
             Player = _playerName;
         }
 
         public void RecordHighScore()
-        {            
-            using(var f = File.CreateText(_filePath))
-            {
-                f.Write(HighScore);
-            }
-        }
-
-        public void ReadHighScore()
         {
-            if(File.Exists(_filePath))
-            {
-                using (var f = new StreamReader(_filePath))
-                {
-                    int.TryParse(f.ReadToEnd(), out int score);
-                    HighScore = score;
-                }
-            }
-            else
-            {
-                HighScore = 0;
-            }
-            
+            var eds = new EDSInteraction(Player);
+            eds.UpdateUserScores(Player, CurrentScore);
+            eds.PutHighScore(this).Wait();
         }
 
         public void DisplayScore()
