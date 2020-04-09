@@ -7,11 +7,9 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
-            bool success = false;
-            while (!success)
+            while (true)
             {
                 MainMenuDisplayOptions();
-                success = true;
                 var input = Console.ReadKey().KeyChar;
 
                 switch (Char.ToLowerInvariant(input))
@@ -26,7 +24,6 @@ namespace RetroPiDay
                         Environment.Exit(0);
                         break;
                     default:
-                        success = false;
                         Console.WriteLine("bad input. try again.");
                         break;
                 }
@@ -36,6 +33,7 @@ namespace RetroPiDay
         private static void MainMenuDisplayOptions()
         {
             Console.Clear();
+            Console.ResetColor();
             Console.WriteLine("Main Menu:");
             Console.WriteLine("  'n': New Game");
             Console.WriteLine("  'x': Exit");
