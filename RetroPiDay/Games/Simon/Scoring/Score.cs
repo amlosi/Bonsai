@@ -51,5 +51,15 @@ namespace RetroPiDay.Games.Simon
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        public void ShowHighScores()
+        {
+            var eds = new EDSInteraction("asdf");
+            var highScores = eds.GetHighScores().Result;
+
+            foreach (var scorer in highScores)
+            {
+                Console.WriteLine($"{scorer.ScoreKey}  {scorer.Score}  {scorer.Username}");
+            }
+        }
     }
 }
