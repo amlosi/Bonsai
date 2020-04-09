@@ -53,11 +53,12 @@ namespace RetroPiDay.Games.Simon
             var highScores = eds.GetHighScores().Result;
             var colors = new ConsoleColor[] { ConsoleColor.Green, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Blue };
 
+            string format = "{0, -6}{1, -6}{2, -20}";
             Console.WriteLine($"************ HIGH SCORES ************");
-            // Console.WriteLine(string.Format(" "RANK{scorer.ScoreKey}  {scorer.Score}  {scorer.Username}");
+            Console.WriteLine(String.Format(format, "RANK", "SCORE", "USER"));
             foreach (var scorer in highScores)
             {
-                Console.WriteLine($"{scorer.ScoreKey}  {scorer.Score}  {scorer.Username}");
+                Console.WriteLine(String.Format(format, scorer.ScoreKey, scorer.Score, scorer.Username));
             }
             Thread.Sleep(5000);
         }

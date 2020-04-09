@@ -7,9 +7,6 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(String.Format("foo {0, -10} {0, -8} ", "bar", "poih"));
-            Console.ReadKey();
-
             int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
