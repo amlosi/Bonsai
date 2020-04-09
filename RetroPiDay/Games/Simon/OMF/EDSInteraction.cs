@@ -20,6 +20,7 @@ namespace RetroPiDay.Games.Simon
         private static string _topTen = "TopTen";
         private static string _highScores = "HighScores";
         private static string _playerScores = "PlayerScores";
+        public List<HighScores> _highScoresList = null;
 
 
         public EDSInteraction(string streamName)
@@ -228,9 +229,9 @@ namespace RetroPiDay.Games.Simon
             }
         }
 
-        public async Task<Models.TopTenStream> GetHighScores()
+        public async Task<List<HighScores>> GetHighScores()
         {
-            var url = _streamUrl + _topTen;
+            var url = _streamUrl + _topTen + "/data?startIndex=1&count=10";
 
             try
             {
@@ -243,7 +244,16 @@ namespace RetroPiDay.Games.Simon
                 {
                     string highScoresString = await response.Content.ReadAsStringAsync();
 
-                    Models.TopTenStream highScores = JsonSerializer.Deserialize<Models.TopTenStream>(highScoresString);
+                    List<HighScores> highScores = JsonSerializer.Deserialize<List<HighScores>>(highScoresString);
+                    highScores.Sort(delegate (HighScores x, HighScores y)
+                    {
+                        if (x.ScoreKey == null && y.ScoreKey == null) return 0;
+                        else if (x.ScoreKey == null) return -1;
+                        else if (y.ScoreKey == null) return 1;
+                        else return x.ScoreKey.CompareTo(y.ScoreKey);
+                    });
+                        
+                    _highScoresList = highScores;
 
                     return highScores;
                 }
@@ -261,7 +271,7 @@ namespace RetroPiDay.Games.Simon
 
             try
             {
-                var response = await _client.GetAsync(baseUrl + "/data?startIndex=0&count=10");
+                var response = await _client.GetAsync(baseUrl + "/data?startIndex=1&count=10");
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
                     return;

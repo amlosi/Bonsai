@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace RetroPiDay.Games.Simon
 {
     class Score
     {
-        /*
-         *  Test.  Create Unit test or put in main.
-            Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
-            score.CurrentScore = 5;
-            score.RecordHighScore();
-
-            var scoreScreen = new HighScoreScreen();
-            scoreScreen.ShowHighScores();
-            Console.ReadKey();
-        */
+        private EDSInteraction _eds = null;
 
         public int CurrentScore { get; set; } = 0;
 
@@ -32,13 +24,22 @@ namespace RetroPiDay.Games.Simon
         public Score(string _playerName)
         {
             Player = _playerName;
+            _eds = new EDSInteraction(Player);
+            _eds.GetHighScores().Wait();
+            HighScore = 0;
+            try
+            {
+                HighScore = _eds._highScoresList[0].Score;
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void RecordHighScore()
         {
-            var eds = new EDSInteraction(Player);
-            eds.UpdateUserScores(Player, CurrentScore);
-            eds.PutHighScore(this).Wait();
+            _eds.UpdateUserScores(Player, CurrentScore);
+            _eds.PutHighScore(this).Wait();
         }
 
         public void DisplayScore()
@@ -49,7 +50,35 @@ namespace RetroPiDay.Games.Simon
             Console.WriteLine(_scores);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
+
         }
 
+        public void ShowHighScores()
+        {
+            Console.Clear();
+            var eds = new EDSInteraction("asdf");
+            var highScores = eds.GetHighScores().Result;
+            var colors = new ConsoleColor[] { ConsoleColor.Green, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Blue };
+            int colorIndex = 0;
+
+            string format = "{0, -6}{1, -6}{2, -20}";
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine($"************ HIGH SCORES ************");
+            Console.BackgroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(String.Format(format, "RANK", "SCORE", "USER"));
+            foreach (var scorer in highScores)
+            {
+                Console.BackgroundColor = colors[colorIndex];
+                Console.WriteLine(String.Format(format, scorer.ScoreKey, scorer.Score, scorer.Username));
+
+                colorIndex = colorIndex + 1;
+                if (colorIndex >= colors.Length)
+                {
+                    colorIndex = 0;
+                }
+            }
+            Thread.Sleep(5000);
+        }
     }
 }

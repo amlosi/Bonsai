@@ -20,7 +20,13 @@ namespace RetroPiDay
                 width = 100;
             }
 
-            Console.SetWindowSize(width, height);
+            try
+            {
+                Console.SetWindowSize(width, height);
+            }
+            catch (Exception)
+            {
+            }
 
             while (true)
             {
