@@ -29,7 +29,8 @@ namespace RetroPiDay.Games.Simon
 
         public void Outro()
         {
-            eds.UpdateUserScores(user, score.CurrentScore);
+            score.RecordHighScore();
+            score.ShowHighScores();
             exitCredits.RollReel();
             Thread.Sleep(1000);
         }
@@ -63,6 +64,7 @@ namespace RetroPiDay.Games.Simon
                 Thread.Sleep(2000);
 
                 round++;
+                score.CurrentScore = round;
             }
 
             score.DisplayScore();

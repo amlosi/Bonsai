@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace RetroPiDay.Games.Simon
 {
     class Score
     {
-        /*
-         *  Test.  Create Unit test or put in main.
-            Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
-            score.CurrentScore = 5;
-            score.RecordHighScore();
-
-            var scoreScreen = new HighScoreScreen();
-            scoreScreen.ShowHighScores();
-            Console.ReadKey();
-        */
+        private EDSInteraction _eds = null;
 
         public int CurrentScore { get; set; } = 0;
 
@@ -32,13 +24,15 @@ namespace RetroPiDay.Games.Simon
         public Score(string _playerName)
         {
             Player = _playerName;
+            _eds = new EDSInteraction(Player);
+            _eds.GetHighScores().Wait();
+            HighScore = _eds._highScoresList[0].Score;
         }
 
         public void RecordHighScore()
         {
-            var eds = new EDSInteraction(Player);
-            eds.UpdateUserScores(Player, CurrentScore);
-            eds.PutHighScore(this).Wait();
+            _eds.UpdateUserScores(Player, CurrentScore);
+            _eds.PutHighScore(this).Wait();
         }
 
         public void DisplayScore()
@@ -49,17 +43,23 @@ namespace RetroPiDay.Games.Simon
             Console.WriteLine(_scores);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
+
         }
 
         public void ShowHighScores()
         {
+            Console.Clear();
             var eds = new EDSInteraction("asdf");
             var highScores = eds.GetHighScores().Result;
+            var colors = new ConsoleColor[] { ConsoleColor.Green, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Blue };
 
+            Console.WriteLine($"************ HIGH SCORES ************");
+            // Console.WriteLine(string.Format(" "RANK{scorer.ScoreKey}  {scorer.Score}  {scorer.Username}");
             foreach (var scorer in highScores)
             {
                 Console.WriteLine($"{scorer.ScoreKey}  {scorer.Score}  {scorer.Username}");
             }
+            Thread.Sleep(5000);
         }
     }
 }

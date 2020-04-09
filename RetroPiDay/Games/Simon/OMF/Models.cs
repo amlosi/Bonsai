@@ -19,6 +19,16 @@ namespace RetroPiDay.Games.Simon
             public int Score { get; set; }
 
             public string Username { get; set; }
+
+            public int CompareTo(HighScores otherKey)
+            {
+                // A null value means that this object is greater.
+                if (otherKey == null)
+                    return 1;
+
+                else
+                    return this.ScoreKey.CompareTo(otherKey.ScoreKey);
+            }
         }
 
         public class UserStream

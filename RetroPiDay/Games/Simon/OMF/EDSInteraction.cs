@@ -20,7 +20,7 @@ namespace RetroPiDay.Games.Simon
         private static string _topTen = "TopTen";
         private static string _highScores = "HighScores";
         private static string _playerScores = "PlayerScores";
-        public static List<HighScores> _highScoresList = null;
+        public List<HighScores> _highScoresList = null;
 
 
         public EDSInteraction(string streamName)
@@ -245,6 +245,14 @@ namespace RetroPiDay.Games.Simon
                     string highScoresString = await response.Content.ReadAsStringAsync();
 
                     List<HighScores> highScores = JsonSerializer.Deserialize<List<HighScores>>(highScoresString);
+                    highScores.Sort(delegate (HighScores x, HighScores y)
+                    {
+                        if (x.ScoreKey == null && y.ScoreKey == null) return 0;
+                        else if (x.ScoreKey == null) return -1;
+                        else if (y.ScoreKey == null) return 1;
+                        else return x.ScoreKey.CompareTo(y.ScoreKey);
+                    });
+                        
                     _highScoresList = highScores;
 
                     return highScores;

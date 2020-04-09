@@ -7,6 +7,9 @@ namespace RetroPiDay
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(String.Format("foo {0, -10} {0, -8} ", "bar", "poih"));
+            Console.ReadKey();
+
             int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
@@ -20,7 +23,13 @@ namespace RetroPiDay
                 width = 100;
             }
 
-            Console.SetWindowSize(width, height);
+            try
+            {
+                Console.SetWindowSize(width, height);
+            }
+            catch (Exception)
+            {
+            }
 
             while (true)
             {
