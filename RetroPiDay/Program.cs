@@ -1,6 +1,5 @@
 ﻿using RetroPiDay.Games.Simon;
 using System;
-using System.Net;
 
 namespace RetroPiDay
 {
@@ -23,8 +22,7 @@ namespace RetroPiDay
 
             Console.SetWindowSize(width, height);
 
-            bool success = false;
-            while (!success)
+            while (true)
             {
                 MainMenuDisplayOptions();
                 var input = Console.ReadKey().KeyChar;
