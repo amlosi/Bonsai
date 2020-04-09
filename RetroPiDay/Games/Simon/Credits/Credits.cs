@@ -7,7 +7,7 @@ namespace RetroPiDay.Games.Simon
     class Credits
     {
         private static int _depth = 4;
-        private static int _breadth = 50;
+        private static int _breadth = 64;
         private static int _middle = (_breadth - 1) / 2;
         private char[,] _creditsReel = new char[_depth, _breadth];
         private List<string> _devs = new List<string>();
@@ -22,18 +22,22 @@ namespace RetroPiDay.Games.Simon
 
         public Credits()
         {
-            _roles.Add("Sound FX");
-            _roles.Add("User Interaction");
-            _roles.Add("Game Loop");
-            _roles.Add("Sequence Generation");
-            _roles.Add("Splash Screen");
-            _roles.Add("Credits/High Score");
+            _roles.Add("Sound FX"); //Greg
+            _roles.Add("User Interaction"); //Sean 
+            _roles.Add("User Interaction"); //Alan
+            _roles.Add("Game Loop"); //Alan
+            _roles.Add("Sequence Generation"); //Randy
+            _roles.Add("UI & Splash Screen"); //UI/Splash Jeremy
+            _roles.Add("High Score/EDS Communication"); //Alan
+            _roles.Add("Credits/EDS Communication"); //Alix
 
             _devs.Add("Greg Holt");
             _devs.Add("Sean Driscoll");
             _devs.Add("Alan Levi");
+            _devs.Add("Alan Levi");
             _devs.Add("Randal Glass");
             _devs.Add("Jeremy Spooner");
+            _devs.Add("Alan Levi");
             _devs.Add("Alix Willis");
 
             _colors.Add(ConsoleColor.Red);
