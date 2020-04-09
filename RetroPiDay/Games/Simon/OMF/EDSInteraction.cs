@@ -21,6 +21,7 @@ namespace RetroPiDay.Games.Simon
         private static string _highScores = "HighScores";
         private static string _playerScores = "PlayerScores";
         public List<HighScores> _highScoresList = null;
+        private bool IsEDSAlive = true;
 
 
         public EDSInteraction(string streamName)
@@ -35,15 +36,19 @@ namespace RetroPiDay.Games.Simon
                 //Add user stream
                 SetupStream(streamName, string.Format(OMFStrings.ContainerString, streamName, _playerScores));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine("** EDS MUST BE INSTALLED FOR SCORE RECORDING FUNCTIONALITY **");
+                Console.WriteLine(e);
             }
             
         }
 
         public void UpdateUserScores(string user, int score)
         {
+            if (!IsEDSAlive)
+            {
+                return;
+            }
             UserScore val = GetLastDataValue(user);
 
             if (val == null)
@@ -60,6 +65,10 @@ namespace RetroPiDay.Games.Simon
 
         public bool SetupStream(string streamName, string json)
         {
+            if (!IsEDSAlive)
+            {
+                return false;
+            }
             if (CheckIfStreamExists(streamName))
             {
                 return true;
@@ -77,6 +86,7 @@ namespace RetroPiDay.Games.Simon
             }
             catch(AggregateException)
             {
+                IsEDSAlive = false;
                 return false;
             }
             catch (Exception e)
@@ -88,6 +98,10 @@ namespace RetroPiDay.Games.Simon
 
         private bool SetupTypes(string type, string json)
         {
+            if (!IsEDSAlive)
+            {
+                return false;
+            }
             if (CheckIfTypeExists(type))
             {
                 return true;
@@ -116,6 +130,10 @@ namespace RetroPiDay.Games.Simon
 
         private UserScore GetLastDataValue(string user)
         {
+            if (!IsEDSAlive)
+            {
+                return null;
+            }
             HttpResponseMessage returnCode = default;
             string _url = _streamUrl + user + "/data/last";
             try
@@ -141,6 +159,10 @@ namespace RetroPiDay.Games.Simon
 
         private bool SendUserScore(UserScore val, string stream)
         {
+            if (!IsEDSAlive)
+            {
+                return false;
+            }
             HttpResponseMessage returnCode = default;
             UserStream user = new UserStream();
             user.ContainerId = stream;
@@ -170,7 +192,10 @@ namespace RetroPiDay.Games.Simon
         {
             HttpResponseMessage returnCode = default;
             var url = _typeUrl + typeName;
-
+            if (!IsEDSAlive)
+            {
+                return false;
+            }
             try
             {
                 returnCode = _client.GetAsync(url).Result;
@@ -185,6 +210,8 @@ namespace RetroPiDay.Games.Simon
             }
             catch (AggregateException)
             {
+                IsEDSAlive = false;
+                Console.WriteLine("** EDS MUST BE INSTALLED FOR SCORE RECORDING FUNCTIONALITY **");
                 return false;
             }
             catch (Exception e)
@@ -198,6 +225,10 @@ namespace RetroPiDay.Games.Simon
         {
             HttpResponseMessage returnCode = default;
             string _url = _streamUrl + user + "/data?startIndex=0&count=1000";
+            if (!IsEDSAlive)
+            {
+                return 0;
+            }
 
             List<UserScore> userScores = new List<UserScore>();
             try
@@ -206,6 +237,7 @@ namespace RetroPiDay.Games.Simon
             }
             catch (AggregateException)
             {
+                IsEDSAlive = false;
                 return 0;
             }
             catch (Exception e)
@@ -241,7 +273,10 @@ namespace RetroPiDay.Games.Simon
         {
             HttpResponseMessage returnCode = default;
             var url = _streamUrl + streamName;
-
+            if (!IsEDSAlive)
+            {
+                return false;
+            }
             try
             {
                 returnCode = _client.GetAsync(url).Result;
@@ -256,6 +291,7 @@ namespace RetroPiDay.Games.Simon
             }
             catch (AggregateException)
             {
+                IsEDSAlive = false;
                 Console.WriteLine("** EDS MUST BE INSTALLED FOR SCORE RECORDING FUNCTIONALITY **");
                 return false;
             }
@@ -269,7 +305,10 @@ namespace RetroPiDay.Games.Simon
         public async Task<List<HighScores>> GetHighScores()
         {
             var url = _streamUrl + _topTen + "/data?startIndex=1&count=10";
-
+            if(!IsEDSAlive)
+            {
+                return null;
+            }
             try
             {
                 var response = await _client.GetAsync(url);
@@ -309,7 +348,10 @@ namespace RetroPiDay.Games.Simon
         public async Task PutHighScore(Score myScore)
         {
             var baseUrl = _streamUrl + _topTen;
-
+            if (!IsEDSAlive)
+            {
+                return;
+            }
             try
             {
                 List<HighScores> highScores = await GetHighScores();
@@ -387,6 +429,7 @@ namespace RetroPiDay.Games.Simon
             }
             catch (AggregateException)
             {
+                IsEDSAlive = false;
             }
             catch (Exception e)
             {
