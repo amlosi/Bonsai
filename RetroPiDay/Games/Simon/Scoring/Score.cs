@@ -54,9 +54,14 @@ namespace RetroPiDay.Games.Simon
 
         public void ShowHighScores()
         {
+            
             Console.Clear();
             var eds = new EDSInteraction("asdf");
             var highScores = eds.GetHighScores().Result;
+            if (highScores.Count < 1)
+            {
+                return;
+            }
             var colors = new ConsoleColor[] { ConsoleColor.Green, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Blue };
             int colorIndex = 0;
 
