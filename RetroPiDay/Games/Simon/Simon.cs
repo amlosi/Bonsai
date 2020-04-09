@@ -29,7 +29,6 @@ namespace RetroPiDay.Games.Simon
 
         public void Outro()
         {
-            score.RecordHighScore();
             score.ShowHighScores();
             exitCredits.RollReel();
             Thread.Sleep(1000);
@@ -63,8 +62,8 @@ namespace RetroPiDay.Games.Simon
                 Console.WriteLine($"Great job!  You got all colors right!");
                 Thread.Sleep(2000);
 
-                round++;
                 score.CurrentScore = round;
+                round++;
             }
 
             score.DisplayScore();
@@ -96,15 +95,19 @@ namespace RetroPiDay.Games.Simon
 
         private void Win()
         {
+            score.RecordHighScore();
             Console.Clear();
-            Console.WriteLine("Winner!");
+            Console.WriteLine("!!!!Winner!!!!");
+            score.DisplayScore();
             Thread.Sleep(2000);
         }
 
         private void Lose()
         {
+            score.RecordHighScore();
             Console.Clear();
             Console.WriteLine("You lost!");
+            score.DisplayScore();
             Thread.Sleep(2000);
         }
     }

@@ -50,7 +50,6 @@ namespace RetroPiDay.Games.Simon
             Console.WriteLine(_scores);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
-
         }
 
         public void ShowHighScores()
