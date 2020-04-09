@@ -26,13 +26,13 @@ namespace RetroPiDay.Games.Simon
             Player = _playerName;
             _eds = new EDSInteraction(Player);
             _eds.GetHighScores().Wait();
-            if (_eds._highScoresList.Count <= 0)
-            {
-                HighScore = 0;
-            } 
-            else
+            HighScore = 0;
+            try
             {
                 HighScore = _eds._highScoresList[0].Score;
+            }
+            catch (Exception)
+            {
             }
         }
 
