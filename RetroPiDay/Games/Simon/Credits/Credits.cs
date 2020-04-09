@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 
 namespace RetroPiDay.Games.Simon
@@ -64,17 +65,17 @@ namespace RetroPiDay.Games.Simon
 
         private void PrintCredit()
         {
+
             for (int i = 0; i < _depth; i++)
             {
-                Console.Write("\t");
+                var builder = new StringBuilder();
                 for (int j = 0; j < _breadth; j++)
                 {
-                    Console.Write(_creditsReel[i, j]);
+                    builder.Append(_creditsReel[i, j]);
                     Thread.Sleep(10);
                 }
-                Console.Write("\n");
+                Console.WriteLine("{0}{1}{2}", "".PadLeft(8), builder.ToString(), "".PadRight(8));
             }
-            Console.Write("\t");
         }
 
         public void RollReel()
