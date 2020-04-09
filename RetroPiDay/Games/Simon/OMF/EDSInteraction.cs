@@ -24,13 +24,21 @@ namespace RetroPiDay.Games.Simon
 
         public EDSInteraction(string streamName)
         {
-            //Setup types and HighScores
-            SetupTypes(_playerScores, OMFStrings.UserTypeString);
-            SetupTypes(_highScores, OMFStrings.TopTenTypeString);
-            SetupStream(_topTen, string.Format(OMFStrings.ContainerString, _topTen, _highScores));
+            try
+            {
+                //Setup types and HighScores
+                SetupTypes(_playerScores, OMFStrings.UserTypeString);
+                SetupTypes(_highScores, OMFStrings.TopTenTypeString);
+                SetupStream(_topTen, string.Format(OMFStrings.ContainerString, _topTen, _highScores));
 
-            //Add user stream
-            SetupStream(streamName, string.Format(OMFStrings.ContainerString, streamName, _playerScores));
+                //Add user stream
+                SetupStream(streamName, string.Format(OMFStrings.ContainerString, streamName, _playerScores));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("** EDS MUST BE INSTALLED FOR SCORE RECORDING FUNCTIONALITY **");
+            }
+            
         }
 
         public void UpdateUserScores(string user, int score)
@@ -66,6 +74,10 @@ namespace RetroPiDay.Games.Simon
                 returnCode.EnsureSuccessStatusCode();
                 return true;
             }
+            catch(AggregateException)
+            {
+                return false;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -90,6 +102,10 @@ namespace RetroPiDay.Games.Simon
                 returnCode.EnsureSuccessStatusCode();
                 return true;
             }
+            catch(AggregateException)
+            {
+                return false;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -104,6 +120,10 @@ namespace RetroPiDay.Games.Simon
             try
             {
                 returnCode = _client.GetAsync(_url).Result;
+            }
+            catch (AggregateException)
+            {
+                return null;
             }
             catch (Exception e)
             {
@@ -133,6 +153,10 @@ namespace RetroPiDay.Games.Simon
                 returnCode.EnsureSuccessStatusCode();
                 return true;
             }
+            catch (AggregateException)
+            {
+                return false;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -158,6 +182,10 @@ namespace RetroPiDay.Games.Simon
                     return true;
                 }
             }
+            catch (AggregateException)
+            {
+                return false;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -174,6 +202,10 @@ namespace RetroPiDay.Games.Simon
             try
             {
                 returnCode = _client.GetAsync(_url).Result;
+            }
+            catch (AggregateException)
+            {
+                return 0;
             }
             catch (Exception e)
             {
@@ -221,6 +253,11 @@ namespace RetroPiDay.Games.Simon
                     return true;
                 }
             }
+            catch (AggregateException)
+            {
+                Console.WriteLine("** EDS MUST BE INSTALLED FOR SCORE RECORDING FUNCTIONALITY **");
+                return false;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -247,6 +284,10 @@ namespace RetroPiDay.Games.Simon
 
                     return highScores;
                 }
+            }
+            catch (AggregateException)
+            {
+                return null;
             }
             catch (Exception e)
             {
@@ -342,6 +383,9 @@ namespace RetroPiDay.Games.Simon
                         returnCode.EnsureSuccessStatusCode();
                     }
                 }
+            }
+            catch (AggregateException)
+            {
             }
             catch (Exception e)
             {
