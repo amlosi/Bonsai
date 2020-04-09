@@ -1,5 +1,4 @@
-﻿using RetroPiDay.Games.Simon.OMF;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -8,7 +7,7 @@ namespace RetroPiDay.Games.Simon
     class Score
     {
         /*
-         * Test.  Create Unit test or put in main.
+         *  Test.  Create Unit test or put in main.
             Score score = new Score($"{Environment.UserName}@{Dns.GetHostName()}osisoft.com");
             score.CurrentScore = 5;
             score.RecordHighScore();

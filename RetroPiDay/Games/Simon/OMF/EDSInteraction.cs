@@ -169,7 +169,6 @@ namespace RetroPiDay.Games.Simon
         {
             HttpResponseMessage returnCode = default;
             string _url = _streamUrl + user + "/data?startIndex=0&count=1000";
-            int max = 0;
 
             List<UserScore> userScores = new List<UserScore>();
             try
@@ -308,7 +307,7 @@ namespace RetroPiDay.Games.Simon
                         if (highScores.HighScorers.Count < 10)
                         {
                             // New Scorer
-                            var scorer = new HighScores() { ScoreKey = index, Score = myScore.CurrentScore, Username = myScore.Player };
+                            var scorer = new Models.HighScores() { ScoreKey = index, Score = myScore.CurrentScore, Username = myScore.Player };
                             highScores.HighScorers.Add(scorer);
                         }
                         else
@@ -327,8 +326,8 @@ namespace RetroPiDay.Games.Simon
                         }
                     }
 
-                    highScoresString = JsonSerializer.Serialize<Models.TopTenStream>(highScores);
-                    var content = new StringContent("{" + highScoresString + "}", Encoding.UTF8, "application/json");
+                    string json = JsonSerializer.Serialize<Models.TopTenStream>(highScores);
+                    var content = new StringContent("{" + json + "}", Encoding.UTF8, "application/json");
                     HttpResponseMessage returnCode;
                     if (highScores.HighScorers.Count > 1)
                     {
