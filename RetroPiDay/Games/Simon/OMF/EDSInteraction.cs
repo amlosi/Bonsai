@@ -5,9 +5,11 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static RetroPiDay.Games.Simon.OMF.Models;
 
-namespace RetroPiDay.Games.Simon.OMF
+using UserScore = RetroPiDay.Games.Simon.Models.UserScore;
+using UserStream = RetroPiDay.Games.Simon.Models.UserStream;
+
+namespace RetroPiDay.Games.Simon
 {
     class EDSInteraction
     {

@@ -1,5 +1,4 @@
 ﻿using RetroPiDay.Games.Simon;
-using RetroPiDay.Games.Simon.Scoring;
 using System;
 
 namespace RetroPiDay
@@ -13,10 +12,9 @@ namespace RetroPiDay
             {
                 MainMenuDisplayOptions();
                 success = true;
-                var keyInfo = Console.ReadKey();
+                var input = Console.ReadKey().KeyChar;
 
-                char mainMenuInput = keyInfo.KeyChar;
-                switch (mainMenuInput)
+                switch (Char.ToLowerInvariant(input))
                 {
                     case 'n':
                         var game = new Simon();
