@@ -8,7 +8,7 @@ namespace RetroPiDay.Games.Simon
     public class Simon : IGame
     {
         private Credits exitCredits = new Credits();
-        private static string user = $"{Environment.UserName}@{Dns.GetHostName()}osisoft.com";
+        private static string user = $"{Environment.UserName}";
         private Score score = new Score(user);
         private EDSInteraction eds = new EDSInteraction(user);
         private int sequenceMaxSize = 128;

@@ -59,13 +59,24 @@ namespace RetroPiDay.Games.Simon
             var eds = new EDSInteraction("asdf");
             var highScores = eds.GetHighScores().Result;
             var colors = new ConsoleColor[] { ConsoleColor.Green, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Blue };
+            int colorIndex = 0;
 
             string format = "{0, -6}{1, -6}{2, -20}";
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine($"************ HIGH SCORES ************");
+            Console.BackgroundColor = ConsoleColor.Cyan;
             Console.WriteLine(String.Format(format, "RANK", "SCORE", "USER"));
             foreach (var scorer in highScores)
             {
+                Console.BackgroundColor = colors[colorIndex];
                 Console.WriteLine(String.Format(format, scorer.ScoreKey, scorer.Score, scorer.Username));
+
+                colorIndex = colorIndex + 1;
+                if (colorIndex >= colors.Length)
+                {
+                    colorIndex = 0;
+                }
             }
             Thread.Sleep(5000);
         }
